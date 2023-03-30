@@ -49,7 +49,8 @@ export default function Home() {
           </a>
         </div>
         <div>
-          <Link href="./hello">Go to Hello</Link>
+          <Link href="./hello">Go to Hello</Link>&nbsp;|&nbsp;
+          <Link href="./dashboard/">Go to Dashboard</Link>
         </div>
       </main>
 
