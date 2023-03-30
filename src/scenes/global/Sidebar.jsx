@@ -1,4 +1,4 @@
-const SideBar = () => {
+const Sidebar = () => {
     return <div>Sidebar</div>
 }
 

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import { useState } from 'react';
+import Sidebar  from '../src/scenes/global/Sidebar';
 import Link from 'next/link';
 
 function Top() {
@@ -27,6 +28,7 @@ export default function HomePage() {
   return (
     <>
       <Top />
+      <Sidebar/>
       <div>
         <Header title="Develop. Preview. Ship. 🚀" />
         <ul>
