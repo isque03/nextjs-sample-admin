@@ -2,8 +2,8 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { ColorModeContext, useMode } from "../src/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import Topbar from "../src/scenes/global/Topbar";
-
+import Topbar  from "../src/scenes/global/Topbar";
+console.log(Topbar);
 export default function App() {
   const [ theme, colorMode ] = useMode();
   return (
