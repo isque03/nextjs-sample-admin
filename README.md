@@ -1,3 +1,3 @@
-# nextjs-sample-admin
+# React Admin - NextJS
 
-React Admin Starter
+This is a version of EdRoh's Admin Dashboard with some modifications to work with Next.js.
