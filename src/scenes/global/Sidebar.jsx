@@ -31,24 +31,32 @@ import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 // MapOutlinedIcon
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+// LocalOfferOutlinedIcon
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+// CampaignOutlinedIcon
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+// ScienceOutlinedIcon
+import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+// EmojiEventsOutlinedIcon
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
-      <MenuItem
-        active={selected === title}
-        style={{
-          color: colors.grey[100],
-        }}
-        onClick={() => setSelected(title)}
-        icon={icon}
-      >
-        <Typography>{title}</Typography>
-        <Link href={to} />
-      </MenuItem>
+        <MenuItem
+            active={selected === title}
+            style={{
+                color: colors.grey[100],
+            }}
+            onClick={() => setSelected(title)}
+            icon={icon}
+        >
+            <Typography>{title}</Typography>
+            <Link href={to} />
+        </MenuItem>
     );
-  };
+};
 
 const Sidebar = () => {
     const theme = useTheme();
@@ -114,7 +122,7 @@ const Sidebar = () => {
                                     height="100"
                                     src={`/assets/user.jpg`}
                                     style={{ cursor: "pointer", borderRadius: "50%" }}
-                                />                                
+                                />
                             </Box>
                             <Box textAlign="center">
                                 <Typography
@@ -151,14 +159,21 @@ const Sidebar = () => {
                         <Item
                             title="Manage Campaigns"
                             to="/campaigns"
-                            icon={<PeopleOutlinedIcon />}
+                            icon={<CampaignOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
                         <Item
-                            title="Contacts Information"
-                            to="/contacts"
-                            icon={<ContactsOutlinedIcon />}
+                            title="Manage Offers"
+                            to="/offers"
+                            icon={<LocalOfferOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Campaign Calendar"
+                            to="/calendar"
+                            icon={<CalendarTodayOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
@@ -169,6 +184,14 @@ const Sidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
+                        <Item
+                            title="Testing"
+                            to="/stack"
+                            icon={<ScienceOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+
 
                         <Typography
                             variant="h6"
@@ -178,23 +201,45 @@ const Sidebar = () => {
                             Loyalty
                         </Typography>
                         <Item
-                            title="Profile Form"
+                            title="Manage Loyalty"
                             to="/form"
                             icon={<PersonOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                        />
+                        /> 
                         <Item
-                            title="Calendar"
-                            to="/calendar"
-                            icon={<CalendarTodayOutlinedIcon />}
+                            title="Shared Rewards"
+                            to="/form"
+                            icon={<EmojiEventsOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />                        
+                        <Typography
+                            variant="h6"
+                            color={colors.grey[300]}
+                            sx={{ m: "15px 0 5px 20px" }}
+                        >
+                            Products
+                        </Typography>
+                        <Item
+                            title="Catalog"
+                            to="/faq"
+                            icon={<HelpOutlineOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
+
+                        <Typography
+                            variant="h6"
+                            color={colors.grey[300]}
+                            sx={{ m: "15px 0 5px 20px" }}
+                        >
+                            Audiences
+                        </Typography>
                         <Item
-                            title="FAQ Page"
-                            to="/faq"
-                            icon={<HelpOutlineOutlinedIcon />}
+                            title="Summary"
+                            to="/contacts"
+                            icon={<ContactsOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
@@ -207,19 +252,27 @@ const Sidebar = () => {
                             Analytics
                         </Typography>
                         <Item
-                            title="Bar Chart"
+                            title="Goals"
                             to="/bar"
                             icon={<BarChartOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
                         <Item
-                            title="Pie Chart"
+                            title="Optimization"
                             to="/pie"
                             icon={<PieChartOutlineOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
+
+                        <Typography
+                            variant="h6"
+                            color={colors.grey[300]}
+                            sx={{ m: "15px 0 5px 20px" }}
+                        >
+                            Billing
+                        </Typography>
                         <Item
                             title="Line Chart"
                             to="/line"

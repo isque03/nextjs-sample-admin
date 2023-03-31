@@ -29,9 +29,9 @@ export default function StackPage() {
       </Box>
       <Box sx={{ width: "100%" }}>
         <Stack spacing={2}>
-          <Item>Offer 1</Item>
-          <Item>Offer 2</Item>
-          <Item>Offer 3</Item>
+          <Item>Final hours: save up to 40% ⌛</Item>
+          <Item>Big savings 🤑 Bigger taste</Item>
+          <Item>DAY 1️⃣ STARTS NOW: 5 Days of Deals ⭐ SHOP NOW</Item>
         </Stack>
       </Box>
     </Box>

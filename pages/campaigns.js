@@ -1,6 +1,6 @@
-import Team from "../src/scenes/team";
+import Campaign from "../src/scenes/campaign";
 export default function CampaignsPage() {
   return (
-    <Team/>
+    <Campaign/>
   );
 }
