@@ -1,7 +1,6 @@
-export default function Team() {
+import Team from "../src/scenes/team";
+export default function TeamPage() {
   return (
-    <div>
-      <h1>Team</h1>
-    </div>
+    <Team/>
   );
 }
