@@ -1,10 +1,13 @@
-import { Typography, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField } from "@mui/material";
+import { Typography, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField, Divider } from "@mui/material";
 
 export default function OfferMethod({ handleBlur, handleChange, values, touched, errors }) {
   return (
     <>
       <Typography variant="h5">Method</Typography>
-      <FormControl>
+
+      <FormControl
+        sx={{ mt: "10px" }}
+      >
         <FormLabel id="demo-radio-buttons-group-label">Method Types</FormLabel>
         <RadioGroup
           row

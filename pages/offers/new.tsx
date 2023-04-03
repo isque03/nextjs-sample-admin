@@ -32,6 +32,7 @@ import ItemConditions from "../../src/scenes/offer-form/ItemConditions";
 import OfferMethod from "../../src/scenes/offer-form/OfferMethod";
 import OrderDiscountConditions from "../../src/scenes/offer-form/OrderDiscountConditions";
 import ShippingDiscountConditions from "../../src/scenes/offer-form/ShippingDiscountConditions";
+import OrderDiscountActions from "../../src/scenes/offer-form/OrderDiscountActions";
 
 const Builder = ({ fields, components }) => {
 
@@ -106,14 +107,14 @@ export default function NewOffersPage() {
   const initialValues: Offer = {
     "name": "10% OFF $150",
     "enabled": true,
-    "type": "ITEM_DISCOUNT",
+    "type": "ORDER_DISCOUNT",
     "method": "automatic",
     "conditions": [
       {
         "name": "offerCond",
         "propertyName": "cart.order",
         "type": "GREATER_THAN_OR_EQUAL",
-        "value": 10
+        "value": 0
       }
     ],
     "actions": [
@@ -232,7 +233,7 @@ export default function NewOffersPage() {
                     p: "20px",
                   }}>
                   <Typography sx={{ gridColumn: "1 / 4" }} variant="h5">Offer Details</Typography>
-                  <Divider sx={{ my: "10px", gridColumn: "span 4" }} />
+                  
 
                   <TextField
                     fullWidth
@@ -245,7 +246,7 @@ export default function NewOffersPage() {
                     name="name"
                     error={touched.name && !values.name}
                     helperText={touched.name && errors.name}
-                    sx={{ gridColumn: "span 2" }}
+                    sx={{ gridColumn: "span 2", mt: "10px" }}
                   />
 
                   <FormGroup
@@ -291,6 +292,13 @@ export default function NewOffersPage() {
                   <Typography color="secondary" variant="body1">{typeToLabel(values.type)}</Typography>
                   <Typography mt="5px" variant="h5">Offer Method</Typography>
                   <Typography color="secondary" variant="body1">{methodToLabel(values.method, values.code)}</Typography>
+                  <Typography mt="5px" variant="h5">Offer Conditions</Typography>
+                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "minimum-purchase" &&  
+                    <Typography color="secondary" variant="body1">Order total is greater than ${values.conditions[0].value}</Typography>
+                  }
+                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "none" &&  
+                    <Typography color="secondary" variant="body1">No minimum purchase requirements.</Typography>
+                  }
 
 
                 </Paper>
@@ -318,9 +326,12 @@ export default function NewOffersPage() {
                     gridRow: "span 2",
                     p: "20px"
                   }}>
-                  <Typography variant="h5">Conditions</Typography>
                   {values.type === "ORDER_DISCOUNT" &&
-                    <OrderDiscountConditions />
+                    <OrderDiscountConditions handleBlur={handleBlur}
+                      handleChange={handleChange}
+                      values={values}
+                      touched={touched}
+                      errors={errors} />
                   }
                   {values.type === "ITEM_DISCOUNT" &&
                     <ItemConditions />
@@ -338,7 +349,13 @@ export default function NewOffersPage() {
                     gridRow: "span 2",
                     p: "20px"
                   }}>
-                  <Typography variant="h5">Actions</Typography>
+                  {values.type === "ORDER_DISCOUNT" &&
+                    <OrderDiscountActions handleBlur={handleBlur}
+                      handleChange={handleChange}
+                      values={values}
+                      touched={touched}
+                      errors={errors} />
+                  }
                 </Paper>
                 <Divider sx={{ gridColumn: "span 4" }} />
                 <Box display="flex" justifyContent="end" mt="20px"
