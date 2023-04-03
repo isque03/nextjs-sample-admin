@@ -215,3 +215,7 @@ export const useMode = () => {
 
   return [theme, colorMode];
 };
+
+export const margins = {
+  "page-boundary": "20px 20px 20px 20px",
+};

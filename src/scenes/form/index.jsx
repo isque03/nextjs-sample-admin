@@ -42,9 +42,10 @@ const Form = () => {
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
-        validatioNSchema={userSchema}
+        validationSchema={userSchema}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          
           <form onSubmit={handleSubmit}>
             <Box
               display="grid"

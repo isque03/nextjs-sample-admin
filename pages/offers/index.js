@@ -1,8 +1,9 @@
 import { Box, useTheme, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "../../src/components/Header";
-import { tokens } from "../../src/theme";
+import { tokens, margins } from "../../src/theme";
 import { mockDataTeam } from "../../src/data/mockData";
+import { useRouter } from 'next/router';
 
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 // LockOpenOutlinedIcon
@@ -59,9 +60,20 @@ export default function OffersPage() {
       },
     },
   ];
+  const router = useRouter();
+  const buttons = [
+    {
+      label: "Create Offer",
+      color: "primary",
+      onClick: () => {
+        console.log("New Campaign");
+        router.push('/offers/new')
+      },
+    },
+  ];
   return (
-    <Box m="20px">
-      <Header title="Offers" subtitle="Manage your offers." />
+    <Box m={margins["page-boundary"]}>
+      <Header title="Offers" subtitle="Manage your offers." buttons={buttons}/>
       <Box m="40px 0 0 0" height="75vh">
         <DataGrid rows={mockDataTeam} columns={columns} pageSize={5} />
       </Box>

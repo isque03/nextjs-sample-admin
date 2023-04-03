@@ -23,11 +23,19 @@
     "@nivo/geo": "^0.80.0",
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
+    "@react-querybuilder/material": "^6.1.4",
     "formik": "^2.2.9",
     "next": "^13.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-pro-sidebar": "0.7.1",
+    "react-query": "^3.39.3",
+    "react-querybuilder": "^6.1.4",
+    "sass": "^1.60.0",
     "yup": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.15.11",
+    "typescript": "5.0.3"
   }
 }

@@ -25,6 +25,10 @@ a {
   position: relative;
 }
 
+.page-boundary {
+  max-width: 20px;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }

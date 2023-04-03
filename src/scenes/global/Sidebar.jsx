@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
+import {ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
+// not in 1.x 
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import Link from 'next/link';

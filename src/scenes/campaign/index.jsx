@@ -1,7 +1,8 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
+import { tokens, margins } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
+import { useQuery } from "react-query";
 
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 // LockOpenOutlinedIcon
@@ -11,6 +12,12 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 
 const Campaign = () => {
+
+  const { isLoading, error, data, refetch } = useQuery("campaign", () =>
+    fetch("http://localhost:8081/v1/rules/offers").then((res) => res.json())
+  );
+
+  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
@@ -54,12 +61,15 @@ const Campaign = () => {
     {
       label: "Create Campaign",
       color: "primary",
-      onClick: () => console.log("New Campaign")
+      onClick: () => {
+        console.log("New Campaign");
+        refetch();
+      }
     },
   ]
   return (
-    <Box m="20px">
-      <Header title="Campains" subtitle="Manage your campaigns" buttons={buttons} />
+    <Box m={margins["page-boundary"]}>
+      <Header title="Campaigns" subtitle="Manage your campaigns" buttons={buttons} />
       <Box m="40px 0 0 0" height="75vh">
         <DataGrid rows={mockDataTeam} columns={columns} pageSize={5} />
       </Box>
