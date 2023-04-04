@@ -3,10 +3,8 @@ import { Paper, Box, useTheme, Typography, TextField, FormGroup, InputLabel, For
 import Header from "../../src/components/Header";
 import CreateOfferForm from "../../src/scenes/offer-form";
 import RuleBuilder from "../../src/scenes/rulebuilder";
-import type { RuleGroupType } from 'react-querybuilder';
 import { useState } from "react";
 
-import { QueryBuilder } from 'react-querybuilder';
 import { fields } from './fields';
 import 'react-querybuilder/dist/query-builder.scss';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -26,43 +24,14 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Select from '@mui/material/Select';
 import Switch from '@mui/material/Switch';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { QueryBuilderMaterial } from "@react-querybuilder/material";
 
 import ItemConditions from "../../src/scenes/offer-form/ItemConditions";
 import OfferMethod from "../../src/scenes/offer-form/OfferMethod";
 import OrderDiscountConditions from "../../src/scenes/offer-form/OrderDiscountConditions";
 import ShippingDiscountConditions from "../../src/scenes/offer-form/ShippingDiscountConditions";
 import OrderDiscountActions from "../../src/scenes/offer-form/OrderDiscountActions";
+import OfferSummary from "../../src/scenes/offer-form/OfferSummary";
 
-const Builder = ({ fields, components }) => {
-
-  const initialQuery: RuleGroupType = { combinator: 'and', rules: [] };
-
-  const [query, setQuery] = useState(initialQuery);
-  const theme = useTheme();
-  return (<Box>
-    <Typography variant="h5">Query Builder</Typography>
-
-    <QueryBuilderMaterial>
-      <QueryBuilder
-        fields={fields}
-        query={query}
-        onQueryChange={(q) => {
-          console.log(q);
-          setQuery(q);
-        }}
-        showCloneButtons
-        showCombinatorsBetweenRules
-        showNotToggle
-        controlClassnames={{ queryBuilder: 'queryBuilder-branches' }}
-
-
-      />
-    </QueryBuilderMaterial>
-
-  </Box>
-  );
-};
 const OtherBuilder = ({ fields, onSubmit }) => {
   return (
     <Box m="40px 0 0 0" height="75vh">
@@ -198,30 +167,7 @@ export default function NewOffersPage() {
     },
   ];
 
-  const typeToLabel = (type: string) => {
-    switch (type) {
-      case "ITEM_DISCOUNT":
-        return "Discount items in cart.";
-      case "ORDER_DISCOUNT":
-        return "Discount order total.";
-      case "SHIPPING_DISCOUNT":
-        return "Discount shipping costs.";
-      default:
-        return "Type not yet chosen.";
-    }
-  };
-
-  const methodToLabel = (method: string, code: string) => {
-    code = code || "(not yet chosen)";
-    switch (method) {
-      case "automatic":
-        return "Automatically applied offer.";
-      case "code":
-        return `Apply offer with code ${code}`;
-      default:
-        return "Method not yet chosen.";
-    }
-  };
+  
 
   // grab the color mode from the context
   const theme = useTheme();
@@ -246,9 +192,9 @@ export default function NewOffersPage() {
                   backgroundColor: colors.greenAccent[300]
                 }
               }
-            } 
-            type="submit"
-            form={formId} >SAVE</Button>
+            }
+              type="submit"
+              form={formId} >SAVE</Button>
           </Stack>
         </Toolbar>
       </AppBar>
@@ -333,22 +279,7 @@ export default function NewOffersPage() {
                     gridRow: "span 3",
                     p: "20px"
                   }}>
-                  <Typography variant="h5">Summary</Typography>
-                  <Divider sx={{ my: "10px" }} />
-                  <Typography color="secondary" variant="body1">{values.name || "No title yet."}</Typography>
-                  <Typography mt="5px" variant="h5">Offer Type</Typography>
-                  <Typography color="secondary" variant="body1">{typeToLabel(values.type)}</Typography>
-                  <Typography mt="5px" variant="h5">Offer Method</Typography>
-                  <Typography color="secondary" variant="body1">{methodToLabel(values.method, values.code)}</Typography>
-                  <Typography mt="5px" variant="h5">Offer Conditions</Typography>
-                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "minimum-purchase" &&
-                    <Typography color="secondary" variant="body1">Minimum spend is ${values.conditions[0].value}</Typography>
-                  }
-                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "none" &&
-                    <Typography color="secondary" variant="body1">No minimum purchase requirements.</Typography>
-                  }
-
-
+                  <OfferSummary values={values}/>
                 </Paper>
 
                 <Paper

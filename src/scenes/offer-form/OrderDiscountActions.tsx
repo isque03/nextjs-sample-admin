@@ -6,9 +6,11 @@ export default function OrderDiscountActions({ handleBlur, handleChange, values,
   const percentSelected = () => {
     values.actions[0].type = "PERCENT";
     setUsePercent(true);
+    handleChange({ target: { name: "actions[0].type", value: "PERCENT" } });
   };
   const amountSelected = () => {
     values.actions[0].type = "AMOUNT";
+    handleChange({ target: { name: "actions[0].type", value: "AMOUNT" } });
     setUsePercent(false);
   };
 
