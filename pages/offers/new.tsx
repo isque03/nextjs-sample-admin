@@ -1,5 +1,5 @@
 import { margins, tokens } from "../../src/theme";
-import { Paper, Box, useTheme, Typography, TextField, FormGroup, InputLabel, FormLabel, Button, Divider, AppBar, Toolbar, Stack } from "@mui/material";
+import { Paper, Box, useTheme, Typography, TextField, FormGroup, InputLabel, FormLabel, Button, Divider, AppBar, Toolbar, Stack, Snackbar } from "@mui/material";
 import Header from "../../src/components/Header";
 import CreateOfferForm from "../../src/scenes/offer-form";
 import RuleBuilder from "../../src/scenes/rulebuilder";
@@ -31,47 +31,13 @@ import OrderDiscountConditions from "../../src/scenes/offer-form/OrderDiscountCo
 import ShippingDiscountConditions from "../../src/scenes/offer-form/ShippingDiscountConditions";
 import OrderDiscountActions from "../../src/scenes/offer-form/OrderDiscountActions";
 import OfferSummary from "../../src/scenes/offer-form/OfferSummary";
+import ActionBar from "../../src/components/ActionBar";
+import { useRouter } from "next/router";
 
-const OtherBuilder = ({ fields, onSubmit }) => {
-  return (
-    <Box m="40px 0 0 0" height="75vh">
-      <RuleBuilder
-        title="Rule Builder"
-        fields={fields}
-        onSubmit={onSubmit}
-      ></RuleBuilder>
-    </Box>
-  )
-
-}
 export default function NewOffersPage() {
-  const fields2 = [
-    { name: "firstName", label: "First Name" },
-    { name: "lastName", label: "Last Name" },
-    { name: "email", label: "Email" },
-    { name: "contact", label: "Contact" },
-    { name: "address1", label: "Address 1" },
-  ];
-  const onSubmit = (data) => {
-    console.log(data);
-  };
 
-  const muiComponents = {
-    Checkbox,
-    //DragIndicator,
-    FormControl,
-    FormControlLabel,
-    Input,
-    ListSubheader,
-    MenuItem,
-    Radio,
-    RadioGroup,
-    Select,
-    Switch,
-    TextareaAutosize,
-    TextField
-  };
 
+  
 
   const initialValues: Offer = {
     "name": null,
@@ -84,22 +50,28 @@ export default function NewOffersPage() {
         "name": "offerCond",
         "propertyName": "cart.order",
         "type": "GREATER_THAN_OR_EQUAL",
-        "value": 0
+        "value": null,
       }
     ],
     "actions": [
       {
         "name": "orderDiscount",
         "type": "AMOUNT",
-        "discountAmount": 0.0
+        "discountAmount": null
       }
     ]
   };
 
-  const [age, setAge] = useState("ITEM_DISCOUNT");
 
+  const router = useRouter();
+  const ENDPOINT = "http://localhost:8081/v1/rules/offers";
+
+  const [formSubmitSuccess, setFormSubmitSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFormError, setIsFormError] = useState(false);
+
+  // Submit form to server
   const handleFormSubmit = async (values) => {
-    console.log("form submitted")
     console.log(values);
     const payload = {
       "name": values.name,
@@ -109,20 +81,36 @@ export default function NewOffersPage() {
       "actions": values.actions,
     };
     console.log(JSON.stringify(payload));
-    const response = await fetch("http://localhost:8081/v1/rules/offers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    console.log(response);
+    try {
+      setIsSubmitting(true);
+      setIsFormError(false);
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      console.log(response);
+      setFormSubmitSuccess(true);
+      router.push("/offers");
+    } catch (error) {
+      console.error(error);
+      setFormSubmitSuccess(false);
+      setIsFormError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+
   const isWideScreen = useMediaQuery("(min-width: 600px)");
   interface OfferSchema {
     method: string;
     code?: string;
   }
+
+  // Form Validation
   const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
     enabled: yup.boolean(),
@@ -139,14 +127,14 @@ export default function NewOffersPage() {
         name: yup.string().required('Name is required'),
         propertyName: yup.string().required('Property Name is required'),
         type: yup.string().required('Type is required'),
-        value: yup.number().moreThan(0, 'Value must be greater than 0').required('Value is required'),
+        value: yup.number().typeError('Value is required').moreThan(0, 'Value must be greater than 0').required('Value is required'),
       })
     ),
     actions: yup.array().of(
       yup.object().shape({
         name: yup.string().required('Name is required'),
         type: yup.string().required('Type is required'),
-        discountAmount: yup.number().moreThan(0, 'Discount amount must be greater than 0.').required('Discount amount is required'),
+        discountAmount: yup.number().typeError('Discount amount is required').moreThan(0, 'Discount amount must be greater than 0.').required('Discount amount is required'),
       })
     ),
   });
@@ -155,50 +143,42 @@ export default function NewOffersPage() {
   }
 
   const formId = "new-offer-form";
-
-  const buttons = [
-    {
-      label: "Save Offer",
-      color: "secondary",
-      form: formId,
-      onClick: () => {
-        console.log("save offer clicked");
-      },
-    },
-  ];
-
-  
-
   // grab the color mode from the context
   const theme = useTheme();
   // grab the color mode from the context for the current theme (light or dark)
   const colors = tokens(theme.palette.mode);
 
+
+  // Action Bar Buttons
+  const buttons = [
+    {
+      label: "Cancel",
+      color: "inherit",
+      variant: "outlined",
+      url: "/offers",
+      sx: { minWidth: "100px" }
+    },
+    {
+      label: "Save Offer",
+      color: "primary",
+      form: formId,     
+      type: "submit",
+      sx: {
+        backgroundColor: colors.greenAccent[400],
+        minWidth: "100px",
+        "&:hover": {
+          backgroundColor: colors.greenAccent[300]
+        }
+      }
+    },
+  ];
+
+
   return (
     <Box m={margins["page-boundary"]}>
       <Header title="Create Offer" buttons={[]} subtitle="Create a new offer" />
-      <AppBar position="fixed">
-        <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>
-            {/* This empty box will push the Save button to the far right */}
-          </Box>
-          <Stack direction="row" spacing={2}>
-            <Button color="inherit" variant="outlined" sx={{ width: "100%" }}>DISMISS</Button>
-            <Button color="primary" onClick={buttons[0].onClick} sx={
-              {
-                backgroundColor: colors.greenAccent[400],
-                width: "100%",
-                "&:hover": {
-                  backgroundColor: colors.greenAccent[300]
-                }
-              }
-            }
-              type="submit"
-              form={formId} >SAVE</Button>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-
+      <ActionBar buttons={buttons} title="Offer not yet saved." />
+      <Snackbar open={isFormError} message="There was a problem saving your offer." autoHideDuration={5000} onClose={() => setIsFormError(false)}/>
       <Box >
         <Formik
           initialValues={initialValues}
@@ -279,7 +259,7 @@ export default function NewOffersPage() {
                     gridRow: "span 3",
                     p: "20px"
                   }}>
-                  <OfferSummary values={values}/>
+                  <OfferSummary values={values} />
                 </Paper>
 
                 <Paper
@@ -353,11 +333,7 @@ export default function NewOffersPage() {
             </form>
           )}
         </Formik>
-
       </Box>
-
-      { /*<Builder fields={fields} components={muiComponents} /> */}
-
     </Box >
   );
 }
