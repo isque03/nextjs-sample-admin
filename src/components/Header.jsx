@@ -2,7 +2,7 @@ import { Typography, Box, useTheme, ButtonGroup } from "@mui/material";
 import { tokens } from "../theme";
 import { Button } from "@mui/material";
 
-const Header = ({ title, subtitle, buttons }) => {
+const Header = ({ title, subtitle, buttons}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -27,6 +27,7 @@ const Header = ({ title, subtitle, buttons }) => {
             onClick={button.onClick}
             variant="contained"
             type="submit"
+            form={button.form || null}
             color={button.color || "success"}
             size="medium"            
             sx={{ height: "38px", padding: "0 20px", ml: "10px" }}

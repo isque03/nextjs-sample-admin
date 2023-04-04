@@ -33,7 +33,7 @@ export default function OfferMethod({ handleBlur, handleChange, values, touched,
             value={values.code}
             name="code"
             error={touched.code && !values.code}
-            helperText={touched.code && errors.code}
+            helperText={errors.code}            
             sx={{ gridColumn: "span 2" }}
           />
           <Typography color="secondary" variant="body2">

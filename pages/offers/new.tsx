@@ -1,5 +1,5 @@
-import { margins } from "../../src/theme";
-import { Paper, Box, useTheme, Typography, TextField, FormGroup, InputLabel, FormLabel, Button, Divider } from "@mui/material";
+import { margins, tokens } from "../../src/theme";
+import { Paper, Box, useTheme, Typography, TextField, FormGroup, InputLabel, FormLabel, Button, Divider, AppBar, Toolbar, Stack } from "@mui/material";
 import Header from "../../src/components/Header";
 import CreateOfferForm from "../../src/scenes/offer-form";
 import RuleBuilder from "../../src/scenes/rulebuilder";
@@ -105,10 +105,11 @@ export default function NewOffersPage() {
 
 
   const initialValues: Offer = {
-    "name": "10% OFF $150",
+    "name": null,
     "enabled": true,
     "type": "ORDER_DISCOUNT",
-    "method": "automatic",
+    "method": "code",
+    "orderMinimumPurchaseType": "minimum-purchase",
     "conditions": [
       {
         "name": "offerCond",
@@ -120,17 +121,33 @@ export default function NewOffersPage() {
     "actions": [
       {
         "name": "orderDiscount",
-        "type": "percent",
-        "value": 5
+        "type": "AMOUNT",
+        "discountAmount": 0.0
       }
     ]
   };
 
   const [age, setAge] = useState("ITEM_DISCOUNT");
 
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = async (values) => {
     console.log("form submitted")
     console.log(values);
+    const payload = {
+      "name": values.name,
+      "enabled": values.enabled ? 1 : 0,
+      "type": values.type,
+      "conditions": values.conditions,
+      "actions": values.actions,
+    };
+    console.log(JSON.stringify(payload));
+    const response = await fetch("http://localhost:8081/v1/rules/offers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    console.log(response);
   };
   const isWideScreen = useMediaQuery("(min-width: 600px)");
   interface OfferSchema {
@@ -142,9 +159,10 @@ export default function NewOffersPage() {
     enabled: yup.boolean(),
     type: yup.string().required('Offer Type is required'),
     method: yup.string().required('Offer Method is required'),
-    code: yup.string().when('method', (method, schema) => {
+    orderMinimumPurchaseType: yup.string().required('Select a minimum purchase type'),
+    code: yup.string().when('method', ([method], schema) => {
       return method === "code"
-        ? schema.required("Code is required when method is 'code'")
+        ? schema.required("Discount Code is required")
         : schema;
     }),
     conditions: yup.array().of(
@@ -152,14 +170,14 @@ export default function NewOffersPage() {
         name: yup.string().required('Name is required'),
         propertyName: yup.string().required('Property Name is required'),
         type: yup.string().required('Type is required'),
-        value: yup.number().required('Value is required'),
+        value: yup.number().moreThan(0, 'Value must be greater than 0').required('Value is required'),
       })
     ),
     actions: yup.array().of(
       yup.object().shape({
         name: yup.string().required('Name is required'),
         type: yup.string().required('Type is required'),
-        value: yup.number().required('Value is required'),
+        discountAmount: yup.number().moreThan(0, 'Discount amount must be greater than 0.').required('Discount amount is required'),
       })
     ),
   });
@@ -167,10 +185,13 @@ export default function NewOffersPage() {
   interface Offer extends yup.InferType<typeof validationSchema> {
   }
 
+  const formId = "new-offer-form";
+
   const buttons = [
     {
       label: "Save Offer",
       color: "secondary",
+      form: formId,
       onClick: () => {
         console.log("save offer clicked");
       },
@@ -202,9 +223,36 @@ export default function NewOffersPage() {
     }
   };
 
+  // grab the color mode from the context
+  const theme = useTheme();
+  // grab the color mode from the context for the current theme (light or dark)
+  const colors = tokens(theme.palette.mode);
+
   return (
     <Box m={margins["page-boundary"]}>
-      <Header title="Create Offer" buttons={buttons} subtitle="Create a new offer" />
+      <Header title="Create Offer" buttons={[]} subtitle="Create a new offer" />
+      <AppBar position="fixed">
+        <Toolbar>
+          <Box sx={{ flexGrow: 1 }}>
+            {/* This empty box will push the Save button to the far right */}
+          </Box>
+          <Stack direction="row" spacing={2}>
+            <Button color="inherit" variant="outlined" sx={{ width: "100%" }}>DISMISS</Button>
+            <Button color="primary" onClick={buttons[0].onClick} sx={
+              {
+                backgroundColor: colors.greenAccent[400],
+                width: "100%",
+                "&:hover": {
+                  backgroundColor: colors.greenAccent[300]
+                }
+              }
+            } 
+            type="submit"
+            form={formId} >SAVE</Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
+
       <Box >
         <Formik
           initialValues={initialValues}
@@ -213,8 +261,8 @@ export default function NewOffersPage() {
         >
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
 
-            <form onSubmit={handleSubmit}>
-              <span>{`${JSON.stringify(errors)}`}</span>
+            <form onSubmit={handleSubmit} id={formId}>
+
               <Box
                 display="grid"
                 gap="30px"
@@ -233,7 +281,7 @@ export default function NewOffersPage() {
                     p: "20px",
                   }}>
                   <Typography sx={{ gridColumn: "1 / 4" }} variant="h5">Offer Details</Typography>
-                  
+
 
                   <TextField
                     fullWidth
@@ -293,10 +341,10 @@ export default function NewOffersPage() {
                   <Typography mt="5px" variant="h5">Offer Method</Typography>
                   <Typography color="secondary" variant="body1">{methodToLabel(values.method, values.code)}</Typography>
                   <Typography mt="5px" variant="h5">Offer Conditions</Typography>
-                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "minimum-purchase" &&  
-                    <Typography color="secondary" variant="body1">Order total is greater than ${values.conditions[0].value}</Typography>
+                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "minimum-purchase" &&
+                    <Typography color="secondary" variant="body1">Minimum spend is ${values.conditions[0].value}</Typography>
                   }
-                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "none" &&  
+                  {values.type === "ORDER_DISCOUNT" && values.orderMinimumPurchaseType === "none" &&
                     <Typography color="secondary" variant="body1">No minimum purchase requirements.</Typography>
                   }
 

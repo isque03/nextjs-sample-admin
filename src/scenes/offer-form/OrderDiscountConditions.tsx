@@ -23,25 +23,25 @@ export default function OrderDiscountConditions({ handleBlur, handleChange, valu
           <TextField
             fullWidth
             InputProps={{
-              startAdornment:< InputAdornment position="start" >$</InputAdornment>
+              startAdornment: < InputAdornment position="start" >$</InputAdornment>
             }}
-      variant="filled"
-      type="number"
-      label="Minimum Purchase"
-      onBlur={handleBlur}
-      onChange={handleChange}
-      value={values.conditions[0].value}
-      name="conditions[0].value"
-      error={touched.orderMinimumPurchase && !values.orderMinimumPurchase}
-      helperText={touched.orderMinimumPurchase && errors.orderMinimumPurchase}
-      sx={{ gridColumn: "span 2" }}
+            variant="filled"
+            type="number"
+            label="Minimum Purchase"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={values.conditions[0].value}
+            name="conditions[0].value"
+            error={touched.conditions && values.conditions && touched.conditions[0].value && !values.conditions[0].value}
+            helperText={touched.conditions && errors.conditions && touched.conditions[0].value && errors.conditions[0].value}
+            sx={{ gridColumn: "span 2" }}
           />
-      <Typography color="secondary" variant="body2">
-        Customers must spent at least this amount to receive the discount.
-      </Typography>
-    </>
-  )
-}
+          <Typography color="secondary" variant="body2">
+            Customers must spent at least this amount to receive the discount.
+          </Typography>
+        </>
+      )
+      }
     </Box >
   );
 }
